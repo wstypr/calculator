@@ -85,6 +85,11 @@ function displayToggleMinus() {
   } else {
     display.textContent = "-" + display.textContent;
   }
+
+  if (currentDigit && display.freeze) {
+    // when the minus button pressed after an operator being pressed but the next number is not yet pressed
+    currentDigit *= -1;
+  }
 }
 
 // functions of math operations
