@@ -11,6 +11,12 @@ for (const numBtn of document.querySelectorAll(".numBtn")) {
   });
 }
 
+// handling click on minus button
+const minusBtn = document.querySelector("#minusBtn");
+minusBtn.addEventListener("click", () => {
+  displayToggleMinus();
+});
+
 // handling click on operator number
 for (const operatorBtn of document.querySelectorAll(".operatorBtn")) {
   operatorBtn.addEventListener("click", function () {
@@ -47,7 +53,11 @@ equalBtn.addEventListener("click", () => {
   }
 });
 
-document.querySelector(".clearBtn").addEventListener("click", displayClear);
+document.querySelector(".clearBtn").addEventListener("click", () => {
+  displayClear();
+  currentOperator = {};
+  currentDigit = undefined;
+});
 
 // handling display
 function displayAddDigit(digit) {
@@ -65,7 +75,16 @@ function displayShowResult(num) {
 }
 
 function displayClear() {
+  display.freeze = true;
   display.textContent = 0;
+}
+
+function displayToggleMinus() {
+  if (display.textContent.charAt(0) === "-") {
+    display.textContent = display.textContent.slice(1);
+  } else {
+    display.textContent = "-" + display.textContent;
+  }
 }
 
 // functions of math operations
