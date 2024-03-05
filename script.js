@@ -113,6 +113,8 @@ function displayAddDigit(digit) {
     display.textContent = "";
     display.textContent = digit;
     display.freeze = false;
+  } else if (display.textContent === "0") {
+    display.textContent = digit;
   } else {
     display.textContent += digit;
   }
