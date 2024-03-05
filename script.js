@@ -98,9 +98,13 @@ function displayAddDigit(digit) {
 }
 
 function displayDeleteDigit() {
-  display.textContent = display.textContent.slice(0, -1);
-  if (display.textContent.length === 0) {
+  if (display.freeze) {
     display.textContent = 0;
+  } else {
+    display.textContent = display.textContent.slice(0, -1);
+    if (display.textContent.length === 0) {
+      display.textContent = 0;
+    }
   }
 }
 
