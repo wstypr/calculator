@@ -6,6 +6,11 @@
   border-radius: 5px;
 }
 
+.info-display {
+  height: 1rem;
+  text-align: end;
+}
+
 .btn-container {
   margin: 1rem 0;
   display: flex;

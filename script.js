@@ -1,4 +1,5 @@
 const display = document.querySelector("#display");
+const info = document.querySelector("#info");
 const equalBtn = document.querySelector(".equalBtn");
 const deleteBtn = document.querySelector("#deleteBtn");
 let currentDigit;
@@ -51,6 +52,7 @@ for (const operatorBtn of document.querySelectorAll(".operatorBtn")) {
     currentDigit = parseFloat(display.textContent);
     display.freeze = true;
     display.allowFraction = true;
+    updateInfo("operator");
   });
 }
 
@@ -68,6 +70,7 @@ equalBtn.addEventListener("click", () => {
     } catch (error) {
       result = error;
     }
+
     displayShowResult(result);
     display.freeze = true;
     display.allowFraction = true;
@@ -80,10 +83,13 @@ deleteBtn.addEventListener("click", () => {
   displayDeleteDigit();
 });
 
+// handling all clear (AC) button
+
 document.querySelector(".clearBtn").addEventListener("click", () => {
   displayClear();
   currentOperator = {};
   currentDigit = undefined;
+  updateInfo();
 });
 
 // handling display
@@ -130,6 +136,19 @@ function displayToggleMinus() {
   }
 }
 
+function updateInfo(state) {
+  switch (state) {
+    case "operator":
+      info.textContent = `${currentDigit} ${currentOperator.symbol}`;
+      break;
+    case "equal":
+      info.textContent = `${currentDigit} ${currentOperator.symbol} ${display.textContent}`;
+      break;
+    default:
+      info.textContent = "";
+  }
+}
+
 // functions of math operations
 function add(num1, num2) {
   return num1 + num2;
@@ -154,5 +173,6 @@ function divide(num1, num2) {
 function operate(num1, num2, operator) {
   let result = operator(num1, num2);
   console.log(`${num1} ${currentOperator.symbol} ${num2} = ${result}`);
+  updateInfo("equal");
   return result;
 }
