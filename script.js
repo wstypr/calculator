@@ -1,8 +1,14 @@
 const display = document.querySelector("#display");
-display.freeze = true; //custom freeze property, when true, the display digit is replaced not appended
 const equalBtn = document.querySelector(".equalBtn");
+const deleteBtn = document.querySelector("#deleteBtn");
 let currentDigit;
 let currentOperator = {};
+
+// display state:
+// display freeze: true = next numBtn pressed will replaced digit in display; :false = will be appended to digits in display
+display.freeze = true;
+// display allowFraction: true = periodBtn will append period/fraction; :false = disabled periodBtn
+display.allowFraction = true;
 
 // handling click on number button
 for (const numBtn of document.querySelectorAll(".numBtn")) {
@@ -15,6 +21,20 @@ for (const numBtn of document.querySelectorAll(".numBtn")) {
 const minusBtn = document.querySelector("#minusBtn");
 minusBtn.addEventListener("click", () => {
   displayToggleMinus();
+});
+
+// handling click on period button
+const periodBtn = document.querySelector("#periodBtn");
+periodBtn.addEventListener("click", () => {
+  if (display.allowFraction) {
+    if (display.freeze) {
+      displayClear();
+      displayAddDigit("0.");
+    } else {
+      displayAddDigit(".");
+    }
+    display.allowFraction = false;
+  }
 });
 
 // handling click on operator number
@@ -30,6 +50,7 @@ for (const operatorBtn of document.querySelectorAll(".operatorBtn")) {
     currentOperator.symbol = this.getAttribute("data-symbol");
     currentDigit = parseFloat(display.textContent);
     display.freeze = true;
+    display.allowFraction = true;
   });
 }
 
@@ -49,8 +70,14 @@ equalBtn.addEventListener("click", () => {
     }
     displayShowResult(result);
     display.freeze = true;
+    display.allowFraction = true;
     currentOperator = {};
   }
+});
+
+// handling delete button
+deleteBtn.addEventListener("click", () => {
+  displayDeleteDigit();
 });
 
 document.querySelector(".clearBtn").addEventListener("click", () => {
@@ -67,6 +94,13 @@ function displayAddDigit(digit) {
     display.freeze = false;
   } else {
     display.textContent += digit;
+  }
+}
+
+function displayDeleteDigit() {
+  display.textContent = display.textContent.slice(0, -1);
+  if (display.textContent.length === 0) {
+    display.textContent = 0;
   }
 }
 
@@ -109,7 +143,7 @@ function divide(num1, num2) {
   if (num2 === 0) {
     throw "Error, Zero Division";
   }
-  return num1 / num2;
+  return (num1 * 10 ** 15) / (num2 * 10 ** 15);
 }
 
 // function for doing operation on two operand based on operator passed
