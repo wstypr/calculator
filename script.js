@@ -1,7 +1,8 @@
 const display = document.querySelector("#display");
 const info = document.querySelector("#info");
-const equalBtn = document.querySelector(".equalBtn");
+const equalBtn = document.querySelector("#equalBtn");
 const deleteBtn = document.querySelector("#deleteBtn");
+const clearBtn = document.querySelector("#clearBtn");
 let currentDigit;
 let currentOperator = {};
 
@@ -47,7 +48,7 @@ for (const operatorBtn of document.querySelectorAll(".operatorBtn")) {
       equalBtn.click();
     }
 
-    currentOperator.operator = window[this.getAttribute("data-value")]; //turn the string of data-value to a function
+    currentOperator.operator = window[this.getAttribute("name")]; //turn the string of name to a function
     currentOperator.symbol = this.getAttribute("data-symbol");
     currentDigit = parseFloat(display.textContent);
     display.freeze = true;
@@ -84,12 +85,26 @@ deleteBtn.addEventListener("click", () => {
 });
 
 // handling all clear (AC) button
-
-document.querySelector(".clearBtn").addEventListener("click", () => {
+clearBtn.addEventListener("click", () => {
   displayClear();
   currentOperator = {};
   currentDigit = undefined;
   updateInfo();
+});
+
+// handling keyboard number input
+window.addEventListener("keydown", (event) => {
+  if ("1234567890+-*/".split("").includes(event.key)) {
+    document.querySelector(`button[data-value='${event.key}'`).click();
+  } else if (event.key === "Enter") {
+    equalBtn.click();
+  } else if (event.key === ".") {
+    minusBtn.click();
+  } else if (event.key === "Backspace") {
+    deleteBtn.click();
+  } else if (event.key === "Delete") {
+    clearBtn.click();
+  }
 });
 
 // handling display
@@ -172,7 +187,19 @@ function divide(num1, num2) {
 // function for doing operation on two operand based on operator passed
 function operate(num1, num2, operator) {
   let result = operator(num1, num2);
-  console.log(`${num1} ${currentOperator.symbol} ${num2} = ${result}`);
+  if (result.toString().length >= 15) {
+    result = result.toExponential(8);
+  }
+
+  let history = document.createElement("div");
+  history.textContent = `${num1} ${currentOperator.symbol} ${num2} = ${result}`;
+  history.className = "history";
+  history.addEventListener("click", function () {
+    clearBtn.click();
+    displayShowResult(result);
+  });
+  document.querySelector(".history-container").prepend(history);
+
   updateInfo("equal");
   return result;
 }
